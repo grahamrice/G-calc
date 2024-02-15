@@ -649,7 +649,7 @@ namespace g_calc
             buttonequals.Focus();
         }
 
-        private void buttonequals_Click(object sender, EventArgs e)
+        private void enterequals()
         {
             operand2 = workingvalue;
             workingvalue = 0;
@@ -678,6 +678,11 @@ namespace g_calc
                 default: result = operand1; break;
             }
             updateworking(false);
+        }
+
+        private void buttonequals_Click(object sender, EventArgs e)
+        {
+            enterequals();
         }
 
         private double factorial(double o)
@@ -1247,6 +1252,23 @@ namespace g_calc
                 {
                     case Keys.D1:
                         enterfactorial(); break;
+                    case Keys.D5:
+                        enterMod(); break;
+                    case Keys.D6:
+                        enterXor(); break;
+                    case Keys.D7:
+                        enterAnd(); break; 
+                    case Keys.D8:
+                        entermultiply(); break;
+                    case Keys.Oemcomma:
+                        enterLT(); break;
+                    case Keys.OemPeriod:
+                        enterMT(); break;
+                    case Keys.Oem5:
+                        enterOr(); break;
+                    case Keys.Oemplus:
+                        enterAdd(); break;
+
                 }
             }
             else
@@ -1299,11 +1321,16 @@ namespace g_calc
                     case Keys.Add:
                         enterAdd(); break;
                     case Keys.Subtract:
+                    case Keys.OemMinus:
                         entersubtract(); break;
                     case Keys.Multiply:
                         entermultiply(); break;
                     case Keys.Divide:
+                    case Keys.Oem2:
                         enterdivide(); break;
+                    case Keys.Oemplus:
+                        enterequals(); break;
+                        
                 }
             }
 
@@ -1314,6 +1341,7 @@ namespace g_calc
             /* we will force focus to equals after every event, so it can catch all button presses and be the default when return is pressed on the keyboard */
             /*if(e.Control &&  e.KeyCode == Keys.V) special ctrl+v case*/
             /*if(e.Control &&  e.KeyCode == Keys.C) special ctrl+c case*/
+            if (e.KeyCode == Keys.ShiftKey) return;
             keypress(e); //.KeyCode);
         }
         
