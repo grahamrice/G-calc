@@ -691,7 +691,7 @@ namespace g_calc
             return result;
         }
 
-        private void buttonadd_Click(object sender, EventArgs e)
+        private void enterAdd()
         {
             if (displayresult)
             {
@@ -710,7 +710,12 @@ namespace g_calc
             buttonequals.Focus();
         }
 
-        private void buttonsubtract_Click(object sender, EventArgs e)
+        private void buttonadd_Click(object sender, EventArgs e)
+        {
+            enterAdd();
+        }
+
+        private void entersubtract()
         {
             if (displayresult)
             {
@@ -729,7 +734,12 @@ namespace g_calc
             buttonequals.Focus();
         }
 
-        private void buttonmultiply_Click(object sender, EventArgs e)
+        private void buttonsubtract_Click(object sender, EventArgs e)
+        {
+            entersubtract();
+        }
+
+        private void entermultiply()
         {
             if (displayresult)
             {
@@ -748,7 +758,12 @@ namespace g_calc
             buttonequals.Focus();
         }
 
-        private void buttondivide_Click(object sender, EventArgs e)
+        private void buttonmultiply_Click(object sender, EventArgs e)
+        {
+            entermultiply();
+        }
+
+        private void enterdivide()
         {
             if (displayresult)
             {
@@ -765,6 +780,11 @@ namespace g_calc
             entrystring = "";
             updateworking(true);
             buttonequals.Focus();
+        }
+
+        private void buttondivide_Click(object sender, EventArgs e)
+        {
+            enterdivide();
         }
 
         private void enterA()
@@ -1219,53 +1239,72 @@ namespace g_calc
             enterMT();
         }
 
-        private void keypress(Keys keyCode)
+        private void keypress(KeyEventArgs e) //Keys keyCode)
         {
-            switch (keyCode)
+            if (Control.ModifierKeys == Keys.Shift)
             {
-                /* case (char)(0x16): paste into workingstring*/
-                case Keys.D0:
-                case Keys.NumPad0:
-                    enter0(); break;
-                case Keys.D1:
-                case Keys.NumPad1:
-                    enter1(); break;
-                case Keys.D2:
-                case Keys.NumPad2:
-                    enter2(); break;
-                case Keys.D3:
-                case Keys.NumPad3:
-                    enter3(); break;
-                case Keys.D4:
-                case Keys.NumPad4:
-                    enter4(); break;
-                case Keys.D5:
-                case Keys.NumPad5:
-                    enter5(); break;
-                case Keys.D6:
-                case Keys.NumPad6:
-                    enter6(); break;
-                case Keys.D7:
-                case Keys.NumPad7:
-                    enter7(); break;
-                case Keys.D8:
-                case Keys.NumPad8:
-                    enter8(); break;
-                case Keys.D9:
-                case Keys.NumPad9:
-                    enter9(); break;
-                case Keys.A:
-                    if (buttonA.Enabled) enterA(); break;
-                case Keys.B:
-                    if (buttonB.Enabled) enterB(); break;
-                case Keys.C:
-                    if (buttonC.Enabled) enterC(); break;
-                case Keys.D:
-                    if (buttonD.Enabled) enterD(); break;
-                case Keys.E:
-                    if (buttonE.Enabled) enterE(); break;
-                case Keys.F:
-                    if (buttonF.Enabled) enterF(); break;
+                switch (e.KeyCode)
+                {
+                    case Keys.D1:
+                        enterfactorial(); break;
+                }
+            }
+            else
+            {
+                switch (e.KeyCode)
+                {
+                    /* case (char)(0x16): paste into workingstring*/
+                    case Keys.D0:
+                    case Keys.NumPad0:
+                        enter0(); break;
+                    case Keys.D1:
+                    case Keys.NumPad1:
+                        enter1(); break;
+                    case Keys.D2:
+                    case Keys.NumPad2:
+                        enter2(); break;
+                    case Keys.D3:
+                    case Keys.NumPad3:
+                        enter3(); break;
+                    case Keys.D4:
+                    case Keys.NumPad4:
+                        enter4(); break;
+                    case Keys.D5:
+                    case Keys.NumPad5:
+                        enter5(); break;
+                    case Keys.D6:
+                    case Keys.NumPad6:
+                        enter6(); break;
+                    case Keys.D7:
+                    case Keys.NumPad7:
+                        enter7(); break;
+                    case Keys.D8:
+                    case Keys.NumPad8:
+                        enter8(); break;
+                    case Keys.D9:
+                    case Keys.NumPad9:
+                        enter9(); break;
+                    case Keys.A:
+                        if (buttonA.Enabled) enterA(); break;
+                    case Keys.B:
+                        if (buttonB.Enabled) enterB(); break;
+                    case Keys.C:
+                        if (buttonC.Enabled) enterC(); break;
+                    case Keys.D:
+                        if (buttonD.Enabled) enterD(); break;
+                    case Keys.E:
+                        if (buttonE.Enabled) enterE(); break;
+                    case Keys.F:
+                        if (buttonF.Enabled) enterF(); break;
+                    case Keys.Add:
+                        enterAdd(); break;
+                    case Keys.Subtract:
+                        entersubtract(); break;
+                    case Keys.Multiply:
+                        entermultiply(); break;
+                    case Keys.Divide:
+                        enterdivide(); break;
+                }
             }
 
         }
@@ -1275,7 +1314,7 @@ namespace g_calc
             /* we will force focus to equals after every event, so it can catch all button presses and be the default when return is pressed on the keyboard */
             /*if(e.Control &&  e.KeyCode == Keys.V) special ctrl+v case*/
             /*if(e.Control &&  e.KeyCode == Keys.C) special ctrl+c case*/
-            keypress(e.KeyCode);
+            keypress(e); //.KeyCode);
         }
         
     }
