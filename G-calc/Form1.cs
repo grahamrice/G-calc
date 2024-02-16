@@ -1383,6 +1383,8 @@ namespace g_calc
                     case Keys.Oemplus:
                         enterequals(); break;
                     case Keys.Escape:
+                        enterCE(); break;
+                    case Keys.Delete:
                         enterCLR(); break;
                     case Keys.OemPeriod: 
                         enterpoint(); break;
