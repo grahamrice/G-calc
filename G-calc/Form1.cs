@@ -572,49 +572,85 @@ namespace g_calc
 
         private void lblFloat16Entry_Click(object sender, EventArgs e)
         {
-            Clipboard.SetText(lblFloat16Entry.Text);
+            String s = lblFloat16Entry.Text;
+            if (s.Length > 0)
+            {
+                if(s.StartsWith("0x")) s = s.Substring(2);
+                if (s.StartsWith("0X")) s = s.Substring(2);
+                Clipboard.SetText(s);
+            }
             buttonequals.Focus();
         }
 
         private void lblFloat16Hex_Click(object sender, EventArgs e)
         {
-            Clipboard.SetText(lblFloat16Hex.Text);
+            string s = lblFloat16Hex.Text;
+            if (s.Length > 0)
+            {
+                if (s.StartsWith("0x")) s = s.Substring(2);
+                if (s.StartsWith("0X")) s = s.Substring(2);
+                Clipboard.SetText(s);
+            }
             buttonequals.Focus();
         }
 
         private void lblFloat32Entry_Click(object sender, EventArgs e)
         {
-            Clipboard.SetText(lblFloat32Entry.Text);
+            String s = lblFloat32Entry.Text;
+            if (s.Length > 0)
+            {
+                if (s.StartsWith("0x")) s = s.Substring(2);
+                if (s.StartsWith("0X")) s = s.Substring(2);
+                Clipboard.SetText(s);
+            }
             buttonequals.Focus();
         }
 
         private void lblFloat32Hex_Click(object sender, EventArgs e)
         {
-            Clipboard.SetText(lblFloat32Hex.Text);
+            String s = lblFloat32Hex.Text;
+            if (s.Length > 0)
+            {
+                if (s.StartsWith("0x")) s = s.Substring(2);
+                if (s.StartsWith("0X")) s = s.Substring(2);
+                Clipboard.SetText(s);
+            }
             buttonequals.Focus();
         }
 
         private void lblFloat64Entry_Click_1(object sender, EventArgs e)
         {
-            Clipboard.SetText(lblFloat64Entry.Text);
+            if(lblFloat64Entry.Text.Length > 0) Clipboard.SetText(lblFloat64Entry.Text);
             buttonequals.Focus();
         }
 
         private void lblFloat64Hex_Click_1(object sender, EventArgs e)
         {
-            Clipboard.SetText(lblFloat64Hex.Text);
+            String s = lblFloat64Hex.Text;
+            if (s.Length > 0)
+            {
+                if (s.StartsWith("0x")) s = s.Substring(2);
+                if (s.StartsWith("0X")) s = s.Substring(2);
+                Clipboard.SetText(s);
+            }
             buttonequals.Focus();
         }
 
         private void lblIntegerEntry_Click(object sender, EventArgs e)
         {
-            Clipboard.SetText(lblIntegerEntry.Text);
+            if(lblIntegerEntry.Text.Length > 0) Clipboard.SetText(lblIntegerEntry.Text);
             buttonequals.Focus();
         }
 
         private void lblHexadecimalEntry_Click(object sender, EventArgs e)
         {
-            Clipboard.SetText(lblHexadecimalEntry.Text);
+            String s = lblHexadecimalEntry.Text;
+            if (s.Length > 0)
+            {
+                if (s.StartsWith("0x")) s = s.Substring(2);
+                if (s.StartsWith("0X")) s = s.Substring(2);
+                Clipboard.SetText(s);
+            }
             buttonequals.Focus();
         }
 
@@ -626,7 +662,7 @@ namespace g_calc
 
         private void LblLongEntry_Click(object sender, EventArgs e)
         {
-            Clipboard.SetText(LblLongEntry.Text);
+            if(LblLongEntry.Text.Length > 0) Clipboard.SetText(LblLongEntry.Text);
             buttonequals.Focus();
         }
 
@@ -644,7 +680,13 @@ namespace g_calc
 
         private void lblLongHexEntry_Click(object sender, EventArgs e)
         {
-            Clipboard.SetText(lblLongHexEntry.Text);
+            String s = lblLongHexEntry.Text;
+            if (s.Length > 0)
+            {
+                if (s.StartsWith("0x")) s = s.Substring(2);
+                if (s.StartsWith("0X")) s = s.Substring(2);
+                Clipboard.SetText(s);
+            }
             buttonequals.Focus();
         }
 
@@ -1027,10 +1069,15 @@ namespace g_calc
             enterlog();
         }
 
-        private void lblcalculation_Click(object sender, EventArgs e)
+        private void calculationcopy()
         {
             if (displayresult) Clipboard.SetText(String.Format("{0}", result));
             buttonequals.Focus();
+        }
+
+        private void lblcalculation_Click(object sender, EventArgs e)
+        {
+            calculationcopy();
         }
 
         private void enterCE()
@@ -1348,8 +1395,17 @@ namespace g_calc
         private void buttonequals_KeyDown(object sender, KeyEventArgs e)
         {
             /* we will force focus to equals after every event, so it can catch all button presses and be the default when return is pressed on the keyboard */
-            /*if(e.Control &&  e.KeyCode == Keys.V) special ctrl+v case*/
-            /*if(e.Control &&  e.KeyCode == Keys.C) special ctrl+c case*/
+            if (e.Control && e.KeyCode == Keys.V)
+            {
+                entrystring = Clipboard.GetText(); /*special ctrl+v case*/
+                updateworking(false);
+                return;
+            }
+            if (e.Control && e.KeyCode == Keys.C)
+            {
+                /*special ctrl+c case*/
+                calculationcopy(); return;
+            }
             if (e.KeyCode == Keys.ShiftKey) return;
             keypress(e); //.KeyCode);
         }
