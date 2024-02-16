@@ -274,12 +274,17 @@ namespace g_calc
             buttonequals.Focus();
         }
 
-        private void buttonpoint_Click(object sender, EventArgs e)
+        private void enterpoint()
         {
             if (cbInteger.Checked || cbHexadecimal.Checked) { }
             else entrystring = String.Format("{0}.", entrystring);
             updateworking(false);
             buttonequals.Focus();
+        }
+
+        private void buttonpoint_Click(object sender, EventArgs e)
+        {
+            enterpoint();
         }
 
         private void buttonsign_Click(object sender, EventArgs e)
@@ -1326,10 +1331,14 @@ namespace g_calc
                     case Keys.Multiply:
                         entermultiply(); break;
                     case Keys.Divide:
-                    case Keys.Oem2:
+                        case Keys.Oem2:
                         enterdivide(); break;
                     case Keys.Oemplus:
                         enterequals(); break;
+                    case Keys.Escape:
+                        enterCLR(); break;
+                    case Keys.OemPeriod: 
+                        enterpoint(); break;
                         
                 }
             }
