@@ -1104,9 +1104,22 @@ namespace g_calc
             enterlog();
         }
 
-        private void calculationcopy()
+        private void calculationcopy() 
         {
-            if (displayresult) Clipboard.SetText(String.Format("{0}", result));
+            if (cbFloat16.Checked) Clipboard.SetText(lblFloat16Entry.Text);
+            else if (cbFloat16Hex.Checked) Clipboard.SetText(lblFloat16Hex.Text);
+            else if (cbFloat32.Checked) Clipboard.SetText(lblFloat32Entry.Text);
+            else if (cbFloat32Hex.Checked) Clipboard.SetText(lblFloat32Hex.Text); 
+            else if (cbFloat64.Checked) Clipboard.SetText(lblFloat64Entry.Text);
+            else if (cbFloat64Hex.Checked) Clipboard.SetText(lblFloat64Hex.Text); 
+            else if (cbInteger.Checked) Clipboard.SetText(String.Format("{0:d}", (int)workingvalue));
+            else if (cbHexadecimal.Checked) Clipboard.SetText(String.Format("{0:x8}", (int)workingvalue));
+            else if (cbLongInteger.Checked) Clipboard.SetText(String.Format("{0}", (long)workingvalue));
+            else if (cbLongHex.Checked) Clipboard.SetText(String.Format("{0:x}", (long)workingvalue));
+
+
+
+            /*if (displayresult) Clipboard.SetText(String.Format("{0}", result));*/
             buttonequals.Focus();
         }
 
