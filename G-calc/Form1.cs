@@ -480,6 +480,35 @@ namespace g_calc
             EnableHexButtons();
         }
 
+        private void selectdatatypenext()
+        {
+            if (cbFloat16.Checked) selectdisplay_Float16Hex();
+            else if (cbFloat16Hex.Checked) selectdisplay_Float32();
+            else if (cbFloat32.Checked) selectdisplay_Float32Hex();
+            else if (cbFloat32Hex.Checked) selectdisplay_Float64();
+            else if (cbFloat64.Checked) selectdisplay_Float64Hex();
+            else if (cbFloat64Hex.Checked) selectdisplay_Integer();
+            else if (cbInteger.Checked) selectdisplay_Hexadecimal();
+            else if (cbHexadecimal.Checked) selectdisplay_LongInteger();
+            else if (cbLongInteger.Checked) selectdisplay_LongHex();
+            else if (cbLongHex.Checked) selectdisplay_Float16();
+        }
+
+        private void selectdatatypeprev()
+        {
+            if (cbFloat16.Checked) selectdisplay_LongHex();
+            else if (cbFloat16Hex.Checked) selectdisplay_Float16();
+            else if (cbFloat32.Checked) selectdisplay_Float16Hex(); 
+            else if (cbFloat32Hex.Checked) selectdisplay_Float32(); 
+            else if (cbFloat64.Checked) selectdisplay_Float32Hex(); 
+            else if (cbFloat64Hex.Checked) selectdisplay_Float64(); 
+            else if (cbInteger.Checked) selectdisplay_Float64Hex(); 
+            else if (cbHexadecimal.Checked) selectdisplay_Integer(); 
+            else if (cbLongInteger.Checked) selectdisplay_Hexadecimal(); 
+            else if (cbLongHex.Checked) selectdisplay_LongInteger(); 
+
+        }
+
         private void lblFloat16Entry_DoubleClick(object sender, EventArgs e)
         {
             selectdisplay_Float16();
@@ -1398,7 +1427,11 @@ namespace g_calc
                         enterpoint(); break;
                     case Keys.Back:
                         enterbackspace(); break;
-                        
+                    case Keys.PageUp:
+                        selectdatatypeprev(); break;
+                    case Keys.PageDown:
+                        selectdatatypenext(); break;
+
                 }
             }
 
