@@ -263,6 +263,12 @@ namespace g_calc
             buttonequals.Focus();
         }
 
+        private void enterbackspace()
+        {
+            if(entrystring.Length > 0) entrystring = entrystring.Remove(entrystring.Length - 1, 1);
+            updateworking(false);
+        }
+
         private void enter0()
         {
             entrystring = String.Format("{0}0", entrystring);
@@ -712,7 +718,7 @@ namespace g_calc
                 case '|': result = (long)operand1 | (long)operand2; break;
                 case '^': result = (long)operand1 ^ (long)operand2; break;
                 case '%': result = operand1 % operand2; break;
-                case '£': result = (double)((long)operand1 ^ -1); break;
+                /*case '£': result = (double)((long)operand1 ^ -1); break;*/
                 case 'l': result = Math.Log10(operand1); break;
                 case 'n': result = Math.Log(operand1, operand2); break;
                 case 'p': result = Math.Pow(operand1, operand2); break;
@@ -1232,18 +1238,19 @@ namespace g_calc
         {
             if (displayresult)
             {
-                operand1 = result;
+                operand1 = 1;
                 displayresult = false;
-                operand2 = 0;
+                workingvalue = result;
             }
             else
             {
-                operand1 = workingvalue;
+                operand1 = 1;
+                operand2 = workingvalue;
             }
-            operation = '£';
-            workingvalue = 0;
+            operation = '/';
             entrystring = "";
-            updateworking(true);
+            /*updateworking(true);*/
+            enterequals();
             buttonequals.Focus();
 
         }
@@ -1386,8 +1393,11 @@ namespace g_calc
                         enterCE(); break;
                     case Keys.Delete:
                         enterCLR(); break;
-                    case Keys.OemPeriod: 
+                    case Keys.OemPeriod:
+                    case Keys.Decimal:
                         enterpoint(); break;
+                    case Keys.Back:
+                        enterbackspace(); break;
                         
                 }
             }
