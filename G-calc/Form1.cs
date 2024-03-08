@@ -32,10 +32,11 @@ namespace g_calc
         private double converthexstring(string h)
         {
             double result = 0;
-            long temp;
+            ulong temp;
             if ((h.Length & 1) == 1) h = String.Format("0{0}", h);
 
-            temp = Int64.Parse(h, System.Globalization.NumberStyles.HexNumber);
+            temp = UInt64.Parse(h, System.Globalization.NumberStyles.HexNumber);
+            
 
             result = (double)temp;
 
@@ -109,7 +110,7 @@ namespace g_calc
             lblIntegerEntry.Text = String.Format("{0:d}", (int)(workingvalue));
             LblLongEntry.Text = String.Format("{0}", (long)workingvalue);
             lblHexadecimalEntry.Text = String.Format("0x{0:X8}", (uint)workingvalue);
-            lblLongHexEntry.Text = String.Format("0x{0:X}", (long)workingvalue);
+            lblLongHexEntry.Text = String.Format("0x{0:X}", (ulong)workingvalue);
             f16ashex = BitConverter.HalfToInt16Bits(f16);
             lblFloat16Hex.Text = String.Format("0x{0}", f16ashex.ToString("X"));
             f32ashex = BitConverter.SingleToInt32Bits(f32);
@@ -743,9 +744,9 @@ namespace g_calc
                 case '-': result = operand1 - operand2; break;
                 case '*': result = operand1 * operand2; break;
                 case '/': result = operand1 / operand2; break;
-                case '&': result = (long)operand1 & (long)operand2; break;
-                case '|': result = (long)operand1 | (long)operand2; break;
-                case '^': result = (long)operand1 ^ (long)operand2; break;
+                case '&': result = (ulong)operand1 & (ulong)operand2; break;
+                case '|': result = (ulong)operand1 | (ulong)operand2; break;
+                case '^': result = (ulong)operand1 ^ (ulong)operand2; break;
                 case '%': result = operand1 % operand2; break;
                 /*case '£': result = (double)((long)operand1 ^ -1); break;*/
                 case 'l': result = Math.Log10(operand1); break;
@@ -1113,9 +1114,9 @@ namespace g_calc
             else if (cbFloat64.Checked) Clipboard.SetText(lblFloat64Entry.Text);
             else if (cbFloat64Hex.Checked) Clipboard.SetText(lblFloat64Hex.Text); 
             else if (cbInteger.Checked) Clipboard.SetText(String.Format("{0:d}", (int)workingvalue));
-            else if (cbHexadecimal.Checked) Clipboard.SetText(String.Format("{0:x8}", (int)workingvalue));
+            else if (cbHexadecimal.Checked) Clipboard.SetText(String.Format("{0:x8}", (uint)workingvalue));
             else if (cbLongInteger.Checked) Clipboard.SetText(String.Format("{0}", (long)workingvalue));
-            else if (cbLongHex.Checked) Clipboard.SetText(String.Format("{0:x}", (long)workingvalue));
+            else if (cbLongHex.Checked) Clipboard.SetText(String.Format("{0:x}", (ulong)workingvalue));
 
 
 
