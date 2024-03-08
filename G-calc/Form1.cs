@@ -108,7 +108,7 @@ namespace g_calc
 
             lblIntegerEntry.Text = String.Format("{0:d}", (int)(workingvalue));
             LblLongEntry.Text = String.Format("{0}", (long)workingvalue);
-            lblHexadecimalEntry.Text = String.Format("0x{0:X8}", (int)workingvalue);
+            lblHexadecimalEntry.Text = String.Format("0x{0:X8}", (uint)workingvalue);
             lblLongHexEntry.Text = String.Format("0x{0:X}", (long)workingvalue);
             f16ashex = BitConverter.HalfToInt16Bits(f16);
             lblFloat16Hex.Text = String.Format("0x{0}", f16ashex.ToString("X"));
@@ -135,9 +135,9 @@ namespace g_calc
             }
             if (cbHexadecimal.Checked)
             {
-                if (displayresult) lblcalculation.Text = String.Format("{0:X} {1}\n{2:X} =\n{3:X}", (int)operand1, operation, (int)operand2, (int)result);
-                else if (operation == '\0') lblcalculation.Text = String.Format("{0:X}", (int)workingvalue);
-                else lblcalculation.Text = String.Format("{0:X} {1}\n {2:X}", (int)operand1, operation, (int)workingvalue);
+                if (displayresult) lblcalculation.Text = String.Format("{0:X} {1}\n{2:X} =\n{3:X}", (uint)operand1, operation, (uint)operand2, (uint)result);
+                else if (operation == '\0') lblcalculation.Text = String.Format("{0:X}", (uint)workingvalue);
+                else lblcalculation.Text = String.Format("{0:X} {1}\n {2:X}", (uint)operand1, operation, (uint)workingvalue);
             }
             if (cbFloat16Hex.Checked)
             {
@@ -1369,7 +1369,18 @@ namespace g_calc
                         enterOr(); break;
                     case Keys.Oemplus:
                         enterAdd(); break;
-
+                    case Keys.A:
+                        if (buttonA.Enabled) enterA(); break;
+                    case Keys.B:
+                        if (buttonB.Enabled) enterB(); break;
+                    case Keys.C:
+                        if (buttonC.Enabled) enterC(); break;
+                    case Keys.D:
+                        if (buttonD.Enabled) enterD(); break;
+                    case Keys.E:
+                        if (buttonE.Enabled) enterE(); break;
+                    case Keys.F:
+                        if (buttonF.Enabled) enterF(); break;
                 }
             }
             else
