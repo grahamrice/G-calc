@@ -94,6 +94,7 @@ namespace g_calc
                 if (cbInteger.Checked) workingvalue = (double)Convert.ToInt64(entrystring);
                 if (cbLongInteger.Checked) workingvalue = (double)Convert.ToInt64(entrystring);
                 if (cbHexadecimal.Checked) workingvalue = converthexstring(entrystring);
+                if (cbLongHex.Checked) workingvalue = converthexstring(entrystring);
 
                 if (cbFloat16Hex.Checked) workingvalue = convertfloat16hexstring(entrystring);
                 if (cbFloat32Hex.Checked) workingvalue = convertfloat32hexstring(entrystring);
