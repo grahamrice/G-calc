@@ -1,12 +1,15 @@
+using System;
+using System.Globalization;
+
 namespace g_calc
 {
     public partial class gcalc : Form
     {
         String entrystring = "";
-        double workingvalue;
-        double operand1;
-        double operand2;
-        double result;
+        Decimal workingvalue;
+        Decimal operand1;
+        Decimal operand2;
+        Decimal result;
         bool displayresult;
         char operation = '\0';
         /*String resultstring;*/
@@ -29,21 +32,21 @@ namespace g_calc
             ActiveControl = buttonequals;
         }
 
-        private double converthexstring(string h)
+        private Decimal converthexstring(string h)
         {
-            double result = 0;
+            Decimal result = 0;
             ulong temp;
             if ((h.Length & 1) == 1) h = String.Format("0{0}", h);
 
             temp = UInt64.Parse(h, System.Globalization.NumberStyles.HexNumber);
             
 
-            result = (double)temp;
+            result = (Decimal)temp;
 
             return result;
         }
 
-        private double convertfloat16hexstring(string h)
+        private Decimal convertfloat16hexstring(string h)
         {
             double result = 0;
             Half temp;
@@ -53,33 +56,43 @@ namespace g_calc
 
             result = (double)temp;
 
-            return result;
+            return (Decimal)result;
         }
 
-        private double convertfloat32hexstring(string h)
+        private Decimal convertfloat32hexstring(string h)
         {
-            double result = 0;
+            Decimal result = 0;
             float temp;
             if ((h.Length & 1) == 1) h = String.Format("0{0}", h);
 
             temp = BitConverter.Int32BitsToSingle((int)Int64.Parse(h, System.Globalization.NumberStyles.HexNumber));
 
-            result = (double)temp;
+            result = (Decimal)temp;
 
             return result;
         }
 
-        private double convertfloat64hexstring(string h)
+        private Decimal convertfloat64hexstring(string h)
         {
-            double result = 0;
+            Decimal result = 0;
             double temp;
             if ((h.Length & 1) == 1) h = String.Format("0{0}", h);
 
             temp = BitConverter.Int64BitsToDouble(Int64.Parse(h, System.Globalization.NumberStyles.HexNumber));
 
-            result = temp;
+            result = (Decimal)temp;
 
             return result;
+        }
+
+        private int GetWorkingValuePrecision()
+        {
+            if(entrystring.Contains('.'))
+            {
+                String[] strings = entrystring.Split('.');
+                return strings[1].Length;
+            }
+            return 0;
         }
 
         private void updateworking(bool ignoreentrystring)
@@ -87,12 +100,23 @@ namespace g_calc
             Half f16;
             float f32;
             /*long temphex;*/
+            int workingvalueprecision = 0;
+            int f16precision, f32precision, f64precision;
 
-            if (displayresult) workingvalue = result;
+            if (displayresult)
+            {
+                workingvalue = result;
+                workingvalueprecision = GetWorkingValuePrecision();
+            }
+            else if ((!ignoreentrystring) && (entrystring.Length == 0))
+            {
+                workingvalue = 0;
+                workingvalueprecision = 0;
+            }
             else if ((!ignoreentrystring) && (entrystring.Length != 0))
             {
-                if (cbInteger.Checked) workingvalue = (double)Convert.ToInt64(entrystring);
-                if (cbLongInteger.Checked) workingvalue = (double)Convert.ToInt64(entrystring);
+                if (cbInteger.Checked) workingvalue = (Decimal)Convert.ToInt64(entrystring);
+                if (cbLongInteger.Checked) workingvalue = (Decimal)Convert.ToInt64(entrystring);
                 if (cbHexadecimal.Checked) workingvalue = converthexstring(entrystring);
                 if (cbLongHex.Checked) workingvalue = converthexstring(entrystring);
 
@@ -100,14 +124,17 @@ namespace g_calc
                 if (cbFloat32Hex.Checked) workingvalue = convertfloat32hexstring(entrystring);
                 if (cbFloat64Hex.Checked) workingvalue = convertfloat64hexstring(entrystring);
 
-                if (cbFloat16.Checked) { f16 = (Half)Convert.ToDouble(entrystring); workingvalue = (double)(f16); }
-                if (cbFloat32.Checked) { f32 = (float)Convert.ToDouble(entrystring); workingvalue = (double)(f32); }
-                if (cbFloat64.Checked) workingvalue = Convert.ToDouble(entrystring);
+                if (cbFloat16.Checked) workingvalue = Convert.ToDecimal(entrystring);
+                if (cbFloat32.Checked) workingvalue = Convert.ToDecimal(entrystring);
+                if (cbFloat64.Checked) workingvalue = Convert.ToDecimal(entrystring);
+
+                if (cbFloat16.Checked || cbFloat32.Checked || cbFloat64.Checked) workingvalueprecision = GetWorkingValuePrecision();
+                else workingvalueprecision = 0;
             }
 
-            f16 = (Half)workingvalue;
             f32 = (float)workingvalue;
-
+            f16 = (Half)f32;
+            
             lblIntegerEntry.Text = String.Format("{0:d}", (int)(workingvalue));
             LblLongEntry.Text = String.Format("{0}", (long)workingvalue);
             lblHexadecimalEntry.Text = String.Format("0x{0:X8}", (uint)workingvalue);
@@ -116,12 +143,16 @@ namespace g_calc
             lblFloat16Hex.Text = String.Format("0x{0}", f16ashex.ToString("X"));
             f32ashex = BitConverter.SingleToInt32Bits(f32);
             lblFloat32Hex.Text = String.Format("0x{0}", f32ashex.ToString("X"));
-            f64ashex = BitConverter.DoubleToInt64Bits(workingvalue);
+            f64ashex = BitConverter.DoubleToInt64Bits(Decimal.ToDouble(workingvalue));
             lblFloat64Hex.Text = String.Format("0x{0}", f64ashex.ToString("X"));
 
-            lblFloat16Entry.Text = String.Format("{0:f}", f16);
-            lblFloat32Entry.Text = String.Format("{0:f}", f32);
-            lblFloat64Entry.Text = String.Format("{0:f}", workingvalue);
+            f16precision = (workingvalueprecision > 4) ? 4 : workingvalueprecision;
+            f32precision = (workingvalueprecision > 8) ? 8 : workingvalueprecision;
+            f64precision = (workingvalueprecision > 16) ? 16 : workingvalueprecision;
+
+            lblFloat16Entry.Text = String.Format(new NumberFormatInfo() { NumberDecimalDigits = f16precision }, "{0:f}", (Half)Decimal.ToSingle(Decimal.Round(workingvalue, f16precision+1)));  //f16
+            lblFloat32Entry.Text = String.Format(new NumberFormatInfo() { NumberDecimalDigits = f32precision }, "{0:f}", Decimal.ToSingle(Decimal.Round(workingvalue, f32precision+1)));
+            lblFloat64Entry.Text = String.Format(new NumberFormatInfo() { NumberDecimalDigits = f64precision }, "{0:f}", Decimal.Round(workingvalue,f64precision+1));
 
             updatecalculation();
         }
@@ -750,14 +781,14 @@ namespace g_calc
                 case '^': result = (ulong)operand1 ^ (ulong)operand2; break;
                 case '%': result = operand1 % operand2; break;
                 /*case '£': result = (double)((long)operand1 ^ -1); break;*/
-                case 'l': result = Math.Log10(operand1); break;
-                case 'n': result = Math.Log(operand1, operand2); break;
-                case 'p': result = Math.Pow(operand1, operand2); break;
+                case 'l': result = (Decimal)Math.Log10(Decimal.ToDouble(operand1)); break;
+                case 'n': result = (Decimal)Math.Log(Decimal.ToDouble(operand1), Decimal.ToDouble(operand2)); break;
+                case 'p': result = (Decimal)Math.Pow(Decimal.ToDouble(operand1), Decimal.ToDouble(operand2)); break;
                 case 's': result = Math.Abs(operand1); break;
-                case '1': result = operand1 * Math.Pow(10, operand2); break;
-                case '!': result = factorial(operand1); break;
-                case '<': result = (double)((int)operand1 << (int)operand2); break;
-                case '>': result = (double)((int)operand1 >> (int)operand2); break;
+                case '1': result = operand1 * (Decimal)Math.Pow(10, Decimal.ToDouble(operand2)); break;
+                case '!': result = (Decimal)factorial(Decimal.ToDouble(operand1)); break;
+                case '<': result = (Decimal)(Decimal.ToInt32(operand1) << Decimal.ToInt32(operand2)); break;
+                case '>': result = (Decimal)((int)operand1 >> (int)operand2); break;
                 case '\0':
                 default: result = operand1; break;
             }
@@ -950,14 +981,14 @@ namespace g_calc
 
         private void buttonPi_MouseClick(object sender, MouseEventArgs e)
         {
-            workingvalue = Math.PI;
+            workingvalue = (Decimal)Math.PI;
             updateworking(true);
             buttonequals.Focus();
         }
 
         private void buttonEuler_Click(object sender, EventArgs e)
         {
-            workingvalue = Math.E;
+            workingvalue = (Decimal)Math.E;
             updateworking(true);
             buttonequals.Focus();
         }
