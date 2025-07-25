@@ -18,6 +18,14 @@ namespace g_calc
         int f32ashex;
         short f16ashex;
 
+        private enum calcstate
+        {
+            AwaitingOperand1,
+            AwaitingOperation,
+            AwaitingOperand2,
+            AwaitingEquals
+        }
+
         public gcalc()
         {
             InitializeComponent();
@@ -95,13 +103,29 @@ namespace g_calc
             return 0;
         }
 
-        private void updateworking(bool ignoreentrystring)
+        private void updateworking(bool ignoreentrystring, bool ispasted)
         {
             Half f16;
             float f32;
             /*long temphex;*/
             int workingvalueprecision = 0;
             int f16precision, f32precision, f64precision;
+            bool containshex = false;
+
+            if (ispasted) {
+                containshex = entrystring.Contains('a') || entrystring.Contains('A') ||
+                              entrystring.Contains('b') || entrystring.Contains('B') ||
+                              entrystring.Contains('c') || entrystring.Contains('C') ||
+                              entrystring.Contains('d') || entrystring.Contains('D') ||
+                              entrystring.Contains('e') || entrystring.Contains('E') ||
+                              entrystring.Contains('f') || entrystring.Contains('F');
+
+                if (entrystring.Contains("0x")) entrystring = entrystring.Replace("0x", "");
+                if (entrystring.Contains("0X")) entrystring = entrystring.Replace("0X", "");
+                if (entrystring.Contains('$'))  entrystring = entrystring.Replace('$', ' ');
+
+                
+             }
 
             if (displayresult)
             {
@@ -115,18 +139,45 @@ namespace g_calc
             }
             else if ((!ignoreentrystring) && (entrystring.Length != 0))
             {
-                if (cbInteger.Checked) workingvalue = (Decimal)Convert.ToInt64(entrystring);
-                if (cbLongInteger.Checked) workingvalue = (Decimal)Convert.ToInt64(entrystring);
-                if (cbHexadecimal.Checked) workingvalue = converthexstring(entrystring);
-                if (cbLongHex.Checked) workingvalue = converthexstring(entrystring);
+                try
+                {
+                    if (cbInteger.Checked)
+                    {
+                        if (containshex) workingvalue = converthexstring(entrystring); //if they paste a hex string, interpret as hex but leave as an integer
+                        else workingvalue = (Decimal)Convert.ToInt64(entrystring);
+                    }
+                    if (cbLongInteger.Checked)
+                    {
+                        if (containshex) workingvalue = converthexstring(entrystring);
+                        else workingvalue = (Decimal)Convert.ToInt64(entrystring);
+                    }
+                    if (cbHexadecimal.Checked) workingvalue = converthexstring(entrystring);
+                    if (cbLongHex.Checked) workingvalue = converthexstring(entrystring);
 
-                if (cbFloat16Hex.Checked) workingvalue = convertfloat16hexstring(entrystring);
-                if (cbFloat32Hex.Checked) workingvalue = convertfloat32hexstring(entrystring);
-                if (cbFloat64Hex.Checked) workingvalue = convertfloat64hexstring(entrystring);
+                    if (cbFloat16Hex.Checked) workingvalue = convertfloat16hexstring(entrystring);
+                    if (cbFloat32Hex.Checked) workingvalue = convertfloat32hexstring(entrystring);
+                    if (cbFloat64Hex.Checked) workingvalue = convertfloat64hexstring(entrystring);
 
-                if (cbFloat16.Checked) workingvalue = Convert.ToDecimal(entrystring);
-                if (cbFloat32.Checked) workingvalue = Convert.ToDecimal(entrystring);
-                if (cbFloat64.Checked) workingvalue = Convert.ToDecimal(entrystring);
+                    if (cbFloat16.Checked)
+                    {
+                        if (containshex) workingvalue = convertfloat16hexstring(entrystring);
+                        else workingvalue = Convert.ToDecimal(entrystring);
+                    }
+                    if (cbFloat32.Checked)
+                    {
+                        if (containshex) workingvalue = convertfloat32hexstring(entrystring);
+                        else workingvalue = Convert.ToDecimal(entrystring);
+                    }
+                    if (cbFloat64.Checked)
+                    {
+                        if (containshex) workingvalue = convertfloat64hexstring(entrystring);
+                        else workingvalue = Convert.ToDecimal(entrystring);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    workingvalue = 0;
+                }
 
                 if (cbFloat16.Checked || cbFloat32.Checked || cbFloat64.Checked) workingvalueprecision = GetWorkingValuePrecision();
                 else workingvalueprecision = 0;
@@ -199,7 +250,7 @@ namespace g_calc
         private void enter1()
         {
             entrystring = String.Format("{0}1", entrystring);
-            updateworking(false);
+            updateworking(false,false);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -211,7 +262,7 @@ namespace g_calc
         private void enter2()
         {
             entrystring = String.Format("{0}2", entrystring);
-            updateworking(false);
+            updateworking(false, false);
         }
         private void button2_Click(object sender, EventArgs e)
         {
@@ -222,7 +273,7 @@ namespace g_calc
         private void enter3()
         {
             entrystring = String.Format("{0}3", entrystring);
-            updateworking(false);
+            updateworking(false, false);
         }
         private void button3_Click(object sender, EventArgs e)
         {
@@ -233,7 +284,7 @@ namespace g_calc
         private void enter4()
         {
             entrystring = String.Format("{0}4", entrystring);
-            updateworking(false);
+            updateworking(false, false);
         }
         private void button4_Click(object sender, EventArgs e)
         {
@@ -244,7 +295,7 @@ namespace g_calc
         private void enter5()
         {
             entrystring = String.Format("{0}5", entrystring);
-            updateworking(false);
+            updateworking(false, false);
         }
         private void button5_Click(object sender, EventArgs e)
         {
@@ -255,7 +306,7 @@ namespace g_calc
         private void enter6()
         {
             entrystring = String.Format("{0}6", entrystring);
-            updateworking(false);
+            updateworking(false, false);
         }
         private void button6_Click(object sender, EventArgs e)
         {
@@ -266,7 +317,7 @@ namespace g_calc
         private void enter7()
         {
             entrystring = String.Format("{0}7", entrystring);
-            updateworking(false);
+            updateworking(false, false);
         }
         private void button7_Click(object sender, EventArgs e)
         {
@@ -277,7 +328,7 @@ namespace g_calc
         private void enter8()
         {
             entrystring = String.Format("{0}8", entrystring);
-            updateworking(false);
+            updateworking(false, false);
         }
         private void button8_Click(object sender, EventArgs e)
         {
@@ -288,7 +339,7 @@ namespace g_calc
         private void enter9()
         {
             entrystring = String.Format("{0}9", entrystring);
-            updateworking(false);
+            updateworking(false, false);
         }
         private void button9_Click(object sender, EventArgs e)
         {
@@ -299,13 +350,13 @@ namespace g_calc
         private void enterbackspace()
         {
             if(entrystring.Length > 0) entrystring = entrystring.Remove(entrystring.Length - 1, 1);
-            updateworking(false);
+            updateworking(false, false);
         }
 
         private void enter0()
         {
             entrystring = String.Format("{0}0", entrystring);
-            updateworking(false);
+            updateworking(false, false);
         }
         private void button0_Click(object sender, EventArgs e)
         {
@@ -317,7 +368,7 @@ namespace g_calc
         {
             if (cbInteger.Checked || cbHexadecimal.Checked) { }
             else entrystring = String.Format("{0}.", entrystring);
-            updateworking(false);
+            updateworking(false, false);
             buttonequals.Focus();
         }
 
@@ -330,7 +381,7 @@ namespace g_calc
         {
             workingvalue *= -1;
 
-            updateworking(true);
+            updateworking(true, false);
             buttonequals.Focus();
         }
 
@@ -792,7 +843,7 @@ namespace g_calc
                 case '\0':
                 default: result = operand1; break;
             }
-            updateworking(false);
+            updateworking(false, false);
         }
 
         private void buttonequals_Click(object sender, EventArgs e)
@@ -826,7 +877,7 @@ namespace g_calc
             operation = '+';
             workingvalue = 0;
             entrystring = "";
-            updateworking(true);
+            updateworking(true, false);
             buttonequals.Focus();
         }
 
@@ -850,7 +901,7 @@ namespace g_calc
             operation = '-';
             workingvalue = 0;
             entrystring = "";
-            updateworking(true);
+            updateworking(true, false);
             buttonequals.Focus();
         }
 
@@ -874,7 +925,7 @@ namespace g_calc
             operation = '*';
             workingvalue = 0;
             entrystring = "";
-            updateworking(true);
+            updateworking(true, false);
             buttonequals.Focus();
         }
 
@@ -898,7 +949,7 @@ namespace g_calc
             operation = '/';
             workingvalue = 0;
             entrystring = "";
-            updateworking(true);
+            updateworking(true, false);
             buttonequals.Focus();
         }
 
@@ -910,7 +961,7 @@ namespace g_calc
         private void enterA()
         {
             entrystring = String.Format("{0}A", entrystring);
-            updateworking(false);
+            updateworking(false, false);
         }
 
         private void buttonA_Click(object sender, EventArgs e)
@@ -922,7 +973,7 @@ namespace g_calc
         private void enterB()
         {
             entrystring = String.Format("{0}B", entrystring);
-            updateworking(false);
+            updateworking(false, false);
         }
 
         private void buttonB_Click(object sender, EventArgs e)
@@ -934,7 +985,7 @@ namespace g_calc
         private void enterC()
         {
             entrystring = String.Format("{0}C", entrystring);
-            updateworking(false);
+            updateworking(false, false);
         }
 
         private void buttonC_Click(object sender, EventArgs e)
@@ -946,7 +997,7 @@ namespace g_calc
         private void enterD()
         {
             entrystring = String.Format("{0}D", entrystring);
-            updateworking(false);
+            updateworking(false, false);
         }
 
         private void buttonD_Click(object sender, EventArgs e)
@@ -958,7 +1009,7 @@ namespace g_calc
         private void enterE()
         {
             entrystring = String.Format("{0}E", entrystring);
-            updateworking(false);
+            updateworking(false, false);
         }
 
         private void buttonE_Click(object sender, EventArgs e)
@@ -970,7 +1021,7 @@ namespace g_calc
         private void enterF()
         {
             entrystring = String.Format("{0}F", entrystring);
-            updateworking(false);
+            updateworking(false, false);
         }
 
         private void buttonF_Click(object sender, EventArgs e)
@@ -982,14 +1033,14 @@ namespace g_calc
         private void buttonPi_MouseClick(object sender, MouseEventArgs e)
         {
             workingvalue = (Decimal)Math.PI;
-            updateworking(true);
+            updateworking(true, false);
             buttonequals.Focus();
         }
 
         private void buttonEuler_Click(object sender, EventArgs e)
         {
             workingvalue = (Decimal)Math.E;
-            updateworking(true);
+            updateworking(true, false);
             buttonequals.Focus();
         }
 
@@ -1008,7 +1059,7 @@ namespace g_calc
             operation = '^';
             workingvalue = 0;
             entrystring = "";
-            updateworking(true);
+            updateworking(true, false);
             buttonequals.Focus();
         }
 
@@ -1032,7 +1083,7 @@ namespace g_calc
             operation = '|';
             workingvalue = 0;
             entrystring = "";
-            updateworking(true);
+            updateworking(true, false);
             buttonequals.Focus();
         }
 
@@ -1056,7 +1107,7 @@ namespace g_calc
             operation = '&';
             workingvalue = 0;
             entrystring = "";
-            updateworking(true);
+            updateworking(true, false);
             buttonequals.Focus();
         }
 
@@ -1080,7 +1131,7 @@ namespace g_calc
             operation = '%';
             workingvalue = 0;
             entrystring = "";
-            updateworking(true);
+            updateworking(true, false);
             buttonequals.Focus();
         }
 
@@ -1104,7 +1155,7 @@ namespace g_calc
             operation = 'n';
             workingvalue = 0;
             entrystring = "";
-            updateworking(true);
+            updateworking(true, false);
             buttonequals.Focus();
         }
 
@@ -1128,7 +1179,7 @@ namespace g_calc
             operation = 'l';
             workingvalue = 0;
             entrystring = "";
-            updateworking(true);
+            updateworking(true, false);
             buttonequals.Focus();
         }
 
@@ -1170,7 +1221,7 @@ namespace g_calc
             result = 0;
             operation = '\0';
             displayresult = false;
-            updateworking(false);
+            updateworking(false, false);
             buttonequals.Focus();
         }
 
@@ -1183,7 +1234,7 @@ namespace g_calc
         {
             entrystring = "";
             workingvalue = 0;
-            updateworking(false);
+            updateworking(false, false);
             buttonequals.Focus();
         }
 
@@ -1207,7 +1258,7 @@ namespace g_calc
             operation = 'p';
             workingvalue = 0;
             entrystring = "";
-            updateworking(true);
+            updateworking(true, false);
             buttonequals.Focus();
 
         }
@@ -1231,7 +1282,7 @@ namespace g_calc
             operation = 's';
             workingvalue = 0;
             entrystring = "";
-            updateworking(true);
+            updateworking(true, false);
             buttonequals.Focus();
         }
 
@@ -1250,7 +1301,7 @@ namespace g_calc
             operation = '1';
             workingvalue = 0;
             entrystring = "";
-            updateworking(true);
+            updateworking(true, false);
             buttonequals.Focus();
 
         }
@@ -1270,7 +1321,7 @@ namespace g_calc
             operation = '!';
             workingvalue = 0;
             entrystring = "";
-            updateworking(true);
+            updateworking(true, false);
             buttonequals.Focus();
         }
 
@@ -1324,7 +1375,7 @@ namespace g_calc
             }
             operation = '/';
             entrystring = "";
-            /*updateworking(true);*/
+            /*updateworking(true,false);*/
             enterequals();
             buttonequals.Focus();
 
@@ -1345,7 +1396,7 @@ namespace g_calc
             operation = '<';
             workingvalue = 0;
             entrystring = "";
-            updateworking(true);
+            updateworking(true, false);
             buttonequals.Focus();
         }
 
@@ -1369,7 +1420,7 @@ namespace g_calc
             operation = '>';
             workingvalue = 0;
             entrystring = "";
-            updateworking(true);
+            updateworking(true, false);
             buttonequals.Focus();
         }
 
@@ -1377,6 +1428,29 @@ namespace g_calc
         {
             enterMT();
         }
+
+        /*private void handlekeypress(char input)
+        {
+            switch (input)
+            {
+                case '0':
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                case '6':
+                case '7':
+                case '8':
+                case '9':
+                case 'A':
+                case 'B':
+                case 'C':
+                case 'D':
+                case 'E':
+                case 'F':
+            }
+        }*/
 
         private void keypress(KeyEventArgs e) //Keys keyCode)
         {
@@ -1500,7 +1574,7 @@ namespace g_calc
             if (e.Control && e.KeyCode == Keys.V)
             {
                 entrystring = Clipboard.GetText(); /*special ctrl+v case*/
-                updateworking(false);
+                updateworking(false,true);
                 return;
             }
             if (e.Control && e.KeyCode == Keys.C)
