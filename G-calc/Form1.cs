@@ -33,6 +33,7 @@ namespace g_calc
             operand2 = 0;
             result = 0;
             displayresult = false;
+            buttonequals.Focus();
         }
 
         private void gcalc_Load(object sender, EventArgs e)
@@ -188,8 +189,8 @@ namespace g_calc
             
             lblIntegerEntry.Text = String.Format("{0:d}", (int)(workingvalue));
             LblLongEntry.Text = String.Format("{0}", (long)workingvalue);
-            lblHexadecimalEntry.Text = String.Format("0x{0:X8}", (uint)workingvalue);
-            lblLongHexEntry.Text = String.Format("0x{0:X}", (ulong)workingvalue);
+            lblHexadecimalEntry.Text = String.Format("0x{0:X8}", Decimal.ToInt32(workingvalue));
+            lblLongHexEntry.Text = String.Format("0x{0:X}", Decimal.ToInt64(workingvalue));
             f16ashex = BitConverter.HalfToInt16Bits(f16);
             lblFloat16Hex.Text = String.Format("0x{0}", f16ashex.ToString("X"));
             f32ashex = BitConverter.SingleToInt32Bits(f32);
@@ -849,6 +850,7 @@ namespace g_calc
         private void buttonequals_Click(object sender, EventArgs e)
         {
             enterequals();
+            buttonequals.Focus();
         }
 
         private double factorial(double o)
