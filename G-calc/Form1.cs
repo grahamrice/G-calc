@@ -220,7 +220,7 @@ namespace g_calc
             }
             if (cbHexadecimal.Checked)
             {
-                if (displayresult) lblcalculation.Text = String.Format("{0:X} {1}\n{2:X} =\n{3:X}", (uint)operand1, operation, (uint)operand2, (uint)result);
+                if (displayresult) lblcalculation.Text = String.Format("{0:X} {1}\n{2:X} =\n{3:X}", (uint)operand1, operation, (uint)operand2, Decimal.ToInt32(result));
                 else if (operation == '\0') lblcalculation.Text = String.Format("{0:X}", (uint)workingvalue);
                 else lblcalculation.Text = String.Format("{0:X} {1}\n {2:X}", (uint)operand1, operation, (uint)workingvalue);
             }
